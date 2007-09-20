@@ -1,0 +1,169 @@
+@
+\documentclass[%
+pdf,
+%nocolorBG,
+colorBG,
+slideColor,
+%slideBW,
+%draft,
+%frames
+%azure
+%contemporain
+%nuancegris
+%troispoints
+%lignesbleues
+%darkblue
+%fymablue
+white
+%autumn
+]{prosper}
+\usepackage[latin1]{inputenc}
+\usepackage{amsmath}
+%\usepackage{../../misc/chicago/chicago}
+\title{Musical Genre Similarity}
+\author{Stephen Sinclair}
+\email{stephen.sinclair@mail.mcgill.ca}
+\slideCaption{STK Piano}
+\begin{document}
+
+\begin{slide}{}
+  \begin{center}
+	{\large STK Piano}
+
+	\vspace{0.2in}
+
+	{\normalsize Presented by:}
+	\vspace{0.5in}
+
+	Stephen Sinclair
+	
+	{\tiny MUMT 614 Winter 2006, McGill University}
+  \end{center}
+\end{slide}
+@
+
+* STK Piano
+
+- Based on SynthBuilder example patch.
+- SynthBuilder - Staccato Systems and Stanford's CCRMA
+
+\begin{center}
+\includegraphics[width=3in]{../subpatches/mainpatch.eps}
+\end{center}
+
+* Controls
+
+\begin{center}
+\includegraphics[width=3in]{../subpatches/controls.eps}
+\end{center}
+
+* Piano Driver
+
+\begin{center}
+\includegraphics[width=4in]{../subpatches/pianodriver.eps}
+\end{center}
+
+* Regular Model
+
+\begin{center}
+\includegraphics[width=4in]{../subpatches/regular.eps}
+\end{center}
+
+* Soundboard
+
+\vspace{0.3in}
+\begin{center}
+\includegraphics[width=2in]{../subpatches/soundboard.eps}
+\end{center}
+
+* Hammer
+
+\vspace{0.2in}
+\begin{center}
+\includegraphics[width=1.5in]{../subpatches/hammer.eps}
+\end{center}
+
+* Hammer Filter
+
+- \texttt{hammerPole = softPole + (loudPole - softPole)*normalizedVelocity}\\
+- \texttt{hammerGain = overallGain * (softGain + (loudGain -
+softGain)*normalizedVelocity)}\\
+- \texttt{softPole} = [0.95, 0.99]\\
+\texttt{loudPole} = [0.84, 0.88] + brightness\\
+\begin{eqnarray*}
+H(z) = \frac{(1-hammerPole)hammerGain}{1+(1-hammerPole)z^{-1}}
+\end{eqnarray*}
+- Non-linearly varying low-pass behaviour
+
+
+* Coupled Strings
+
+\begin{center}
+\includegraphics[width=4in]{../subpatches/coupledstrings.eps}
+\end{center}
+
+* Stiffness
+
+- 3 All-Pass Filters
+\begin{eqnarray*}
+H(z) = \frac{S_k k_s+z^{-1}}{1+{S_k k_s}z^{-1}}
+\end{eqnarray*}
+- $S_k$ depends on note number
+- $k_s$ is adjustable
+
+* Coupling Filter
+
+- Based on filter measurements for a {\em single string}
+\begin{eqnarray*}
+g &=& 10^{D/(20\omega)}\\
+\gamma &=& 3(1-b)-g(1-a)\\
+H(z) &=& \frac{\frac{2(g(1-a)-(1-b))}{\gamma}
+  + \frac{2(a(1-b)-gb(1-a))}{\gamma}z^{-1}}
+{1+\frac{gb(1-a) - 3a(1-b)}{\gamma}z^{-1}}
+\end{eqnarray*}
+- $D$ = decay rate\\
+$\omega$ = frequency\\
+$a$ and $b$ are poles and zeros measured for a single string\\
+
+* Highnotes (Soundboard)
+
+\vspace{0.5in}
+\begin{center}
+\includegraphics[width=2in]{../subpatches/highnotes_sb.eps}
+\end{center}
+
+* Highnotes (Modal Resonator)
+
+\begin{center}
+\includegraphics[width=2.5in]{../subpatches/highnotes_bq.eps}
+\end{center}
+
+* Resonating BiQuads
+
+- Each partial is given a BiQuad filter with resonance
+  created by polar coordinates
+\begin{eqnarray*}
+H(z) = \frac{1}{1 -2r_p\cos(2\pi\theta k_p)z^{-1}+ {r_p}^2z^{-2}}
+\end{eqnarray*}
+
+- An ``ear-balled'' gain (indexed by note number) is applied
+  to the first BiQuad.
+
+- The first partial is divided into two stages, where
+  one is given some FIR behaviour
+{\tiny \begin{eqnarray*}
+H(z) = \frac{
+1 -2(e r_{11}+r_{12}(1-e))(\cos(2\pi\theta k_1)))z^{-1}
+  + ( e {r_{11}}^2+(1-e){r_{12}}^2)z^{-2}}
+{1 -2{r_{11}}\cos(2\pi\theta k_1)z^{-1}+ {r_{11}}^2z^{-2}}
+\end{eqnarray*}}
+- $e$ is the ``second stage amp ratio''
+
+@
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 
+@

@@ -1,0 +1,228 @@
+#LyX 1.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 221
+\textclass extarticle
+\language english
+\inputencoding auto
+\fontscheme default
+\graphics default
+\paperfontsize default
+\spacing single 
+\papersize letterpaper
+\paperpackage a4
+\use_geometry 1
+\use_amsmath 0
+\use_natbib 0
+\use_numerical_citations 0
+\paperorientation portrait
+\leftmargin 1in
+\topmargin 1in
+\rightmargin 1in
+\bottommargin 1in
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\quotes_times 2
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+
+\layout Title
+
+Implementing the SynthBuilder Piano in STK
+\layout Author
+
+Stephen Sinclair
+\layout Standard
+
+
+\begin_inset ERT
+status Collapsed
+
+\layout Standard
+{
+\backslash 
+begin{center}Final Project MUMT 614, Winter 2006
+\backslash 
+
+\backslash 
+McGill University
+\backslash 
+end{center}}
+\layout Standard
+
+\end_inset 
+
+
+\layout Section
+
+Introduction
+\layout Standard
+
+In my project proposal, I suggested that it would be beneficial to retrieve
+ some of the work done by Stanford University's CCRMA group in the early-
+ to mid-1990's on the NeXT-based SynthBuilder project, created by Staccato
+ Systems.
+ SynthBuilder was a graphical system for physical modelling in which a user
+ could make use of a variety of so-called Unit Generators, filters, and
+ other signal processing and control parameter objects organized into a
+ graph called a 
+\emph on 
+patch
+\emph default 
+, which would then generate code to be downloaded to the system's dedicated
+ DSP facilities, to run the algorithm in realtime.
+ At the time, this was the only way of achieving realtime performance, since
+ general-purpose processors were not fast enough to do so.
+\layout Standard
+
+Some interesting models of various string instruments, electric guitars,
+ drums, and bells were created, often using innovative commuted synthesis,
+ modal synthesis, and waveguide techniques.
+ However, SynthBuilder itself depended on a module of the NeXTStep operating
+ system called MusicKit, and utilized many specific features of the Objective-C-
+based system facilities for operation and file storage.
+ Though this likely speeded development and made for efficient code, it
+ also made it difficult to port the software to other systems, and so when
+ NeXT became obsolete, many of these SynthBuilder patches were effectively
+ lost.
+ Despite the similarities between NeXTStep and Apple's modern OS X, SynthBuilder
+ has never been ported.
+ In my personal opinion, this would still be a worthwhile effort, but quite
+ difficult, as it would also imply porting all of MusicKit and re-writing
+ large portions of both the back- and front-ends.
+\layout Standard
+
+However, now that computers are able to perform realtime synthesis, many
+ new DSP environments have been created.
+ One of these is the Synthesis Toolkit in C++ (STK), developed by Perry
+ Cook of Princeton and Gary Scavone of McGill University.
+ STK is a good choice for building portable applications because it is written
+ in pure C++ and embeds a cross-platform realtime audio and MIDI solution
+ called RtAudio and RtMidi, respectively.
+ It is also free and open-source, placed in the public domain.
+\layout Section
+
+Patches
+\layout Standard
+
+Two NeXT cubes were on-hand for running SynthBuilder, which fortunately
+ was still availabe on the Stanford web site.
+ On running it, a 
+\begin_inset Quotes eld
+\end_inset 
+
+demo
+\begin_inset Quotes erd
+\end_inset 
+
+ notice was displayed saying that some functionality would be disabled,
+ but enough functionality was available to be able to load and explore the
+ patches.
+ Unfortunately, most would not actually run, as the machines we had did
+ not have the required DSP capabilities.
+\layout Standard
+
+First, an attempt was made to read the SynthBuilder file format and explore
+ the possibility of writing a conversion software.
+ However, this proved easier said than done.
+ SynthBuilder files were written using the 
+\begin_inset Quotes eld
+\end_inset 
+
+Typed Stream
+\begin_inset Quotes erd
+\end_inset 
+
+ format, an object serializing system in the NeXT operating system.
+ As such, the files consist of a binary-encoded stream of class instances,
+ of which some belong to SynthBuilder, some to MusicKit, and some to NeXTStep.
+ Although some source code for SynthBuilder was available, the file format
+ itself is not described fully by this code.
+ I created a Python-based parser that could read some information from the
+ files, but it was not successfully able to parse the entire file format.
+ It was decided that it would be a better use of time and effort to use
+ the SynthBuilder patches as reference for re-implementation directly using
+ STK classes as the processing units.
+\layout Standard
+
+I chose to start with the Piano patch, as it was a fairly complete example
+ of synthesis techniques, including commuted synthesis, a two-string coupled
+ delay-line feedback loop, a modal synthesis algorithm for the higher piano
+ keys, and non-linear look-up tables for pre-computed data.
+\layout Section
+
+Piano
+\layout Standard
+
+The piano patch is divided into three sections: the so-called piano driver,
+ which interprets incoming MIDI data and forwards it to the correct algorithm
+ (contained in subpatches), the 
+\begin_inset Quotes eld
+\end_inset 
+
+regular notes
+\begin_inset Quotes erd
+\end_inset 
+
+ model, which contains the coupled string algorithm, and the 
+\begin_inset Quotes eld
+\end_inset 
+
+high notes
+\begin_inset Quotes erd
+\end_inset 
+
+ model, which uses a series of biquad (2
+\begin_inset Formula $^{\textrm{nd}}$
+\end_inset 
+
+-order IIR) filters with poles near the unit circle, causing them to ring
+ at particular resonant frequencies which are tuned to simulate a piano
+ note.
+ Each of these resonant frequencies can be considered a mode of vibration
+ for the piano strings.
+\layout Standard
+
+I began by taking screen shots of each subpatch, using NeXTStep's Grab utility.
+ You can view them in the appendix of this document.
+ The piano driver section mainly consisted of look-up tables containing
+ parameters for various objects in the synthesis algorithms.
+ Using TextEdit, it was possible to copy and paste these look-up tables
+ into a text file, which I then converted into C arrays.
+\layout Standard
+
+The subpatches themselves were essentially block diagrams of the respective
+ synthesis algorithm.
+ This made it quite straight-forward to implement them by instantiating
+ similar objects in STK.
+ However, they also each contained a reference to some C code.
+ This code could be called by the SynthBuilder patch through an Objective-C
+ callback wrapper.
+ It was in this C code that the calculations were performed for the various
+ filter coefficients in each model.
+\layout Standard
+
+
+\begin_inset Float figure
+wide false
+collapsed false
+
+\layout Standard
+
+
+\begin_inset Graphics
+	filename regularmodel.eps
+	display none
+	width 5in
+	subcaption
+	subcaptionText "Regular notes model"
+
+\end_inset 
+
+
+\end_inset 
+
+
+\the_end

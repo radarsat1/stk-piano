@@ -1,0 +1,20 @@
+
+Took screenshots using Grab.
+Recorded envelope values using TextEdit.
+
+Identified and implemented basic DSP structure.
+4 Allpass filters + delay lines, coupling filter, feedback.
+Hardcoded parameters as given in initial state.
+Verified that it basically works given an impulse.
+(No soundboard synthesis or other commuted linear strutures.)
+
+Found C code in Piano patch that determined some filter
+parameters and delay length calculations.  Started
+integrating this into the CoupledStrings class.
+
+Replaced two of the Allpasses with a DelayA structure.
+Combined Pole and Zero coupling filters into a PoleZero class.
+
+Began to parameterize hardcoded values for the coupled strings structure.
+Stiffness coefficient
+Detuning frequency, detuning factor

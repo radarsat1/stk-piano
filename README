@@ -1,0 +1,106 @@
+
+This program is an STK implementation of a Piano, translated from the
+original Sondius SynthBuilder patch.  All coefficients and look-up
+tables were found in the original patch, presumably calculated and
+measured by the group at CCRMA.
+
+STK can be found at: http://ccrma.stanford.edu/software/stk/
+
+To compile, type "make".  You'll probably need to edit the Makefile
+to point it at wherever you keep your STK headers and libs.
+
+The demo program can use any MIDI keyboard, or you can also have it
+trigger a single note by specifying a particular MIDI key number.
+
+Run it with the following command-line:
+
+Usage: pianotest [option=value] ...
+
+Where option is one of:
+
+velocity    [0.0-1.0]            Velocity of automatically generated note.
+detuning    [0.0-1.0]            Amount of desired detuning between the two
+                                 piano strings.
+stiffness   [0.0-1.0]            Amount of desired stiffness for the strings.
+brightness  [0.0-1.0]            Amount of brightness (higher frequencies)
+                                 allowed in the sound.
+voices      [1-10]               Number of voices used for polyphony (default=4)
+midinote    [1-107]              Automatically play this note number instead of
+                                 connecting to a MIDI device.
+mididev     [0, ...]             Connect to this MIDI device number.
+samplerate  [44100, 48000, ...]  Desired sample reate (default=48000)
+buffersize  [512, 1024, ...]     Amount of buffer latency (default=512)
+displaymidi [true, false]        Whether or not to print incoming MIDI data.
+
+
+The Piano algorithm works as follows:
+
+- Due to the commuted synthesis, the soundboard and hammer are modeled first.
+
+- The soundboard emits noise which decays according to the "dry tap" amplitude
+  and also adds the pedal envelope.
+
+- The soundboard noise burst is filtered by a series of 4 "hammer filters",
+  which attempt to emulate the felt on a piano hammer.  Since this is non-linear,
+  the coefficients for these filter are pre-calcuated in a look-up table.
+
+- The noise burst passes through a DC blocking filter and into the coupled
+  strings synthesizer.
+
+- The coupled strings oscillator is a set of two delay line loops which share
+  a coupling filter in their feedback path.  This coupling filter plays two
+  roles: it simulates loss in the system overall, and it allows sounds from
+  one string to bleed into the other.  The two strings are slightly detuned,
+  again via values in a look-up table.  Exact tuning is performed by using
+  an all-pass filter for fractional delay lengths.  This was done easily
+  in STK using its DelayA class.
+
+- The delay loops also contain three all-pass filters each, which simulate
+  the "stiffness" of the string.  This stiffness coefficient is dependant
+  on the key being played, and is found in a look-up table and multiplied
+  by the "stiffness factor".
+
+- The output of the coupled strings then is passed through another DC
+  blocking filter, as well as a comb filter used to simulate strike
+  position.  Since strike position is not usually easily modified on
+  a piano, each key has an associated static coefficient for this BiQuad,
+  which is also found in a look-up table.
+
+- For notes higher than E7 (midi note 88), a completely different synthesis
+  engine is used.  After the soundboard synthesis, the noise burst is
+  collected into a series of resonating BiQuad filters, passing through
+  a hammer filter between each.  These resontating biquads simulate modes
+  of vibration (partials).
+
+- This is necessary because in the delay-line model, very high notes require
+  very small delay lines, and so each delay unit is more important for the
+  overall pitch perception.  However, the all-pass used for exact tuning
+  is less precise for higher frequencies, and the result is a mistuned
+  instrument.  
+
+
+Some known bugs and lack of functionality:
+
+- Pedal filter (and consequently the Pedal Presence control) is
+  not implemented - it was not found in the SB patch!
+- Strike position comb filter is guessed, as it is not obvious
+  from patch where it should be implemented.  Might be correct.
+- Not sure how to use "loudHammerFilt" (not found in SB patch)
+- No "soft" pedal
+- There is an occasional glitchy sound, which seems to get into
+  the delay lines. It is unclear where this comes from.
+- Some computers also have trouble with multiple voices, so the
+  whole algorithm is potentially too computationally intensive,
+  and could probably use some optimization.
+- It would be nice to implement the multi-pulse response of the
+  hammer hitting the string in a future version.
+
+
+Stephen Sinclair, McGill University
+Final project, MUMT 614 Winter 2006
+for Gary Scavone.
+
+stephen.sinclair@mail.mcgil.ca
+http://www.music.mcgill.ca/~sinclair
+
+Last edited, April 19, 2006.
