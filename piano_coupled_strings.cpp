@@ -173,3 +173,27 @@ StkFloat CoupledStrings::computeSample(StkFloat input)
 	 return y1 + y2;
 }
 
+StkFrames& CoupledStrings::tick( StkFrames& frames, unsigned int channel )
+{
+#if defined(_STK_DEBUG_)
+  if ( channel >= frames.channels() ) {
+    errorString_ << "Delay::tick(): channel and StkFrames arguments are incompatible!";
+    handleError( StkError::FUNCTION_ARGUMENT );
+  }
+#endif
+
+  StkFloat *samples = &frames[channel];
+  unsigned int hop = frames.channels();
+  for ( unsigned int i=0; i<frames.frames(); i++, samples += hop ) {
+    *samples = computeSample(*samples);
+  }
+
+  lastFrame_[0] = *(samples-hop);
+  return frames;
+}
+
+StkFloat CoupledStrings::tick( StkFloat input, unsigned int channel )
+{
+    lastFrame_[0] = computeSample(input);
+    return lastFrame_[0];
+}

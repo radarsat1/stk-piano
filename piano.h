@@ -5,9 +5,10 @@
 #include <OnePole.h>
 #include <OneZero.h>
 
+using namespace stk;
+
 #include "piano_coupled_strings.h"
 #include "piano_soundboard.h"
-
 
 class Piano : public Instrmnt
 {
@@ -28,7 +29,10 @@ class Piano : public Instrmnt
 
 	int getNoteNumber() { return noteNumber; }
 	bool isActive();
-	
+
+    virtual StkFrames& tick( StkFrames& frames, unsigned int channel = 0 );
+    virtual StkFloat tick( unsigned int channel = 0 );
+
   protected:
 	void calcHammer(StkFloat velocity);
 	void calcHighTuning(int noteNumber, StkFloat freq);

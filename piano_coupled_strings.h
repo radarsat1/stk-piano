@@ -8,6 +8,9 @@
 #include "PoleZero.h"
 #include "TwoZero.h"
 #include "Effect.h"
+
+using namespace stk;
+
 #include "AsympT60.h"
 
 class CoupledStrings : public Effect
@@ -32,6 +35,9 @@ class CoupledStrings : public Effect
 	static StkFloat PoleZeroPhase(StkFloat b0, StkFloat b1, StkFloat a1, StkFloat wT);	
 	static int FrequencyToNoteNumber(StkFloat frequency);
 	static StkFloat NoteNumberToFrequency(int note);
+
+    virtual StkFrames& tick( StkFrames& frames, unsigned int channel = 0 );
+    virtual StkFloat tick( StkFloat, unsigned int channel = 0 );
 
   protected:
 	StkFloat delayLength(StkFloat freq, StkFloat stiffnessCoefficient);

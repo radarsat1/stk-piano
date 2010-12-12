@@ -1,10 +1,10 @@
 
-STKDIR = $(HOME)/projects/stk-4.2.1
+STKDIR = $(HOME)/projects/stk
 STKLIB = $(STKDIR)/src
 STKINCLUDE = $(STKDIR)/include
 
 INCLUDE = -I$(STKINCLUDE)
-CPPFLAGS = $(INCLUDE) -Wall -g
+CPPFLAGS = $(INCLUDE) -Wall -g -D__LITTLE_ENDIAN__ -D__LINUX_ALSA__
 LIB = -L$(STKLIB) -lstk
 
 # Linux

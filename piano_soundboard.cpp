@@ -25,6 +25,31 @@ StkFloat Soundboard::computeSample()
 	 return (dt*nz + pe*nz)*0.5;
 }
 
+StkFrames& Soundboard::tick( StkFrames& frames, unsigned int channel )
+{
+#if defined(_STK_DEBUG_)
+  if ( channel >= frames.channels() ) {
+    errorString_ << "Delay::tick(): channel and StkFrames arguments are incompatible!";
+    handleError( StkError::FUNCTION_ARGUMENT );
+  }
+#endif
+
+  StkFloat *samples = &frames[channel];
+  unsigned int hop = frames.channels();
+  for ( unsigned int i=0; i<frames.frames(); i++, samples += hop ) {
+    *samples = computeSample();
+  }
+
+  lastFrame_[0] = *(samples-hop);
+  return frames;
+}
+
+StkFloat Soundboard::tick( unsigned int channel )
+{
+    lastFrame_[0] = computeSample();
+    return lastFrame_[0];
+}
+
 void Soundboard::noteOn(int note, StkFloat velocity)
 {
 	 sample_counter = 0;

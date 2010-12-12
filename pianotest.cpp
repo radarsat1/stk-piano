@@ -3,11 +3,14 @@
 #include <iostream>
 #include <vector>
 #include <stdio.h>
+#include <string.h>
 
 #include <RtWvOut.h>
 #include <RtAudio.h>
 #include <RtMidi.h>
 #include <FileWvOut.h>
+
+using namespace stk;
 
 #include "piano.h"
 
