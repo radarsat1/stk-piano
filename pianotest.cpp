@@ -146,7 +146,7 @@ int main(int argc, char* argv[])
 		  try {
 			   midi = new RtMidiIn;
 		  }
-		  catch (RtError &e) {
+		  catch (RtMidiError &e) {
 			   std::cout << "Error opening MIDI." << std::endl;
 			   midi = NULL;
 		  }
@@ -182,7 +182,7 @@ int main(int argc, char* argv[])
 			   midi->openPort(port);
 			   std::cout << "Connected to " << midi->getPortName(port) << std::endl;
 		  }
-		  catch (RtError &e) {
+		  catch (RtMidiError &e) {
 			   std::cout << "Error opening MIDI port " << port << std::endl;
 			   delete midi;
 			   midi = NULL;

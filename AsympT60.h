@@ -4,6 +4,8 @@
 
 #include <Asymp.h>
 
+using namespace stk;
+
 class AsympT60 : public Asymp
 {
   public:
