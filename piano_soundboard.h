@@ -11,24 +11,24 @@ using namespace stk;
 
 class Soundboard : public Generator
 {
-  public:
-	Soundboard();
-	~Soundboard() {}
+ public:
+  Soundboard();
+  ~Soundboard() {}
 
-	virtual StkFloat computeSample();
-	void noteOn(int noteNumber, StkFloat velocity);
-	void noteOff();
+  virtual StkFloat computeSample();
+  void noteOn(int noteNumber, StkFloat velocity);
+  void noteOff();
 
-    virtual StkFrames& tick( StkFrames& frames, unsigned int channel = 0 );
-    virtual StkFloat tick( unsigned int channel = 0 );
+  virtual StkFrames& tick( StkFrames& frames, unsigned int channel = 0 );
+  virtual StkFloat tick( unsigned int channel = 0 );
 
-  protected:
-	int sample_counter;
-	int noteNumber;
+ protected:
+  int sample_counter;
+  int noteNumber;
 
-	Noise noise;
-	AsympT60 dryTapAmp;
-	AsympT60 pedalEnv;
+  Noise noise;
+  AsympT60 dryTapAmp;
+  AsympT60 pedalEnv;
 };
 
 #endif // _PIANO_SOUNDBOARD_H_

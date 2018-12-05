@@ -8,21 +8,21 @@
 
 Soundboard::Soundboard()
 {
-	 sample_counter = 0;
+  sample_counter = 0;
 }
 
 StkFloat Soundboard::computeSample()
 {
-	 StkFloat dt = dryTapAmp.tick();
-	 StkFloat pe = pedalEnv.tick();
-	 StkFloat nz = 0;
+  StkFloat dt = dryTapAmp.tick();
+  StkFloat pe = pedalEnv.tick();
+  StkFloat nz = 0;
 
-	 if (dt > 0 || pe > 0)
-		  nz = noise.tick();
+  if (dt > 0 || pe > 0)
+    nz = noise.tick();
 
-	 sample_counter ++;
+  sample_counter ++;
 
-	 return (dt*nz + pe*nz)*0.5;
+  return (dt*nz + pe*nz)*0.5;
 }
 
 StkFrames& Soundboard::tick( StkFrames& frames, unsigned int channel )
@@ -46,27 +46,27 @@ StkFrames& Soundboard::tick( StkFrames& frames, unsigned int channel )
 
 StkFloat Soundboard::tick( unsigned int channel )
 {
-    lastFrame_[0] = computeSample();
-    return lastFrame_[0];
+  lastFrame_[0] = computeSample();
+  return lastFrame_[0];
 }
 
 void Soundboard::noteOn(int note, StkFloat velocity)
 {
-	 sample_counter = 0;
-	 noteNumber = note;
+  sample_counter = 0;
+  noteNumber = note;
 
-	 dryTapAmp.setT60( DryTapAmpT60.getValue(noteNumber) * velocity );
-	 dryTapAmp.setValue( DryTapAmpCurrent );
-	 dryTapAmp.keyOff();
+  dryTapAmp.setT60( DryTapAmpT60.getValue(noteNumber) * velocity );
+  dryTapAmp.setValue( DryTapAmpCurrent );
+  dryTapAmp.keyOff();
 
-	 pedalEnv.setValue( sustainPedalLevel.getValue(noteNumber) );
-	 pedalEnv.setTarget( sustainPedalLevel.getValue(noteNumber) );
+  pedalEnv.setValue( sustainPedalLevel.getValue(noteNumber) );
+  pedalEnv.setTarget( sustainPedalLevel.getValue(noteNumber) );
 }
 
 void Soundboard::noteOff()
 {
-	 pedalEnv.setT60(PEDAL_ENVELOPE_CUTOFF_TIME);
-	 pedalEnv.keyOff();
+  pedalEnv.setT60(PEDAL_ENVELOPE_CUTOFF_TIME);
+  pedalEnv.keyOff();
 }
 
 

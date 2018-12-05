@@ -12,12 +12,12 @@
 
 void AsympT60::setT60(StkFloat t60)
 {
-	 factor_ = exp(-7.0/(t60*Stk::sampleRate()));
-	 constant_ = (1.0 - factor_) * target_;
+  factor_ = exp(-7.0/(t60*Stk::sampleRate()));
+  constant_ = (1.0 - factor_) * target_;
 }
 
 void AsympT60::setT48(StkFloat t48)
 {
-	 factor_ = exp(-T48COEFF/(t48*Stk::sampleRate()));
-	 constant_ = (1.0 - factor_) * target_;
+  factor_ = exp(-T48COEFF/(t48*Stk::sampleRate()));
+  constant_ = (1.0 - factor_) * target_;
 }
