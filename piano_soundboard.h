@@ -25,6 +25,7 @@ class Soundboard : public Generator
  protected:
   int sample_counter;
   int noteNumber;
+  float pedalPresenceFactor;
 
   Noise noise;
   AsympT60 dryTapAmp;
