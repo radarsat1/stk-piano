@@ -169,11 +169,23 @@ void Piano::setDetuningFactor(StkFloat factor)
   cs.setDetuningFactor(factor);
 }
 
+void Piano::setOverallGain(StkFloat factor)
+{
+  if (factor < 0) factor = 0;
+  if (factor > 1) factor = 1;
+  overallGain = factor * 3; // range 0 - 3
+}
+
+void Piano::setPedalPresenceFactor(StkFloat factor)
+{
+  sb.setPedalPresenceFactor(factor);
+}
+
 void Piano::setBrightnessFactor(StkFloat factor)
 {
   if (factor < 0) factor = 0;
   if (factor > 1) factor = 1;
-  brightnessFactor = factor;
+  brightnessFactor = factor * 0.25 + -0.25; // range -0.25 - 0
 }
 
 void Piano::calcHammer(StkFloat velocity)
@@ -181,16 +193,13 @@ void Piano::calcHammer(StkFloat velocity)
   // Hammer filter calculations
 
   StkFloat loudPoleValue = loudPole.getValue(noteNumber);
-  loudPoleValue += -0.050239; // BrightnessAdjustment slider default
+  loudPoleValue += brightnessFactor;
   StkFloat softPoleValue = softPole.getValue(noteNumber);
   // NOT APPLIED. Unchecked in the inspector
 //  StkFloat normalizedVelocityValue = normalizedVelocity.getValue(velocity);
   StkFloat normalizedVelocityValue = velocity;
   StkFloat loudGainValue = loudGain.getValue(noteNumber);
   StkFloat softGainValue = softGain.getValue(noteNumber);
-
-  StkFloat overallGain = 2.807882; // Slider default
-
 
   StkFloat hammerPole = softPoleValue + (loudPoleValue - softPoleValue)*normalizedVelocityValue;
   StkFloat hammerGain = overallGain*(softGainValue + (loudGainValue - softGainValue)*normalizedVelocityValue);

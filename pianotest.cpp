@@ -18,11 +18,15 @@ using namespace stk;
 #define AUTHOR "Stephen Sinclair (with respect to the authors of SynthBuilder)"
 
 // Controls
-// Clavier notes have a MIDI velocity of 64.
-float velocity=0.5039370079;
-float detuning=0.5;
-float stiffness=0.2;
-float brightness=0.5;
+// Clavier notes have a MIDI velocity of 64
+float velocity    = 64.0 / 127.0;
+// Default slider values
+float detuning    = 0.0;
+float stiffness   = 0.0;
+float gain        = 2.807882 / 3.0;
+float resonance   = 0.73913;
+float brightness  = (-0.050239 + 0.25) / 0.25;
+
 int voices=4;
 int midinote=0;
 int mididev=-1;
@@ -74,6 +78,12 @@ void parseParams(int argc, char* argv[])
     else if (strcmp(name, "stiffness")==0) {
       stiffness = atof(value);
     }
+    else if (strcmp(name, "gain")==0) {
+      gain = atof(value);
+    }
+    else if (strcmp(name, "resonance")==0) {
+      resonance = atof(value);
+    }
     else if (strcmp(name, "brightness")==0) {
       brightness = atof(value);
     }
@@ -109,6 +119,8 @@ void parseParams(int argc, char* argv[])
       std::cout << "detuning    [0.0-1.0]            Amount of desired detuning between the two" << std::endl;
       std::cout << "                                 piano strings." << std::endl;
       std::cout << "stiffness   [0.0-1.0]            Amount of desired stiffness for the strings." << std::endl;
+      std::cout << "gain        [0.0-1.0]            Amount of overall gain." << std::endl;
+      std::cout << "resonance   [0.0-1.0]            Amount of pedal presence." << std::endl;
       std::cout << "brightness  [0.0-1.0]            Amount of brightness (higher frequencies)" << std::endl;
       std::cout << "                                 allowed in the sound." << std::endl;
       std::cout << "voices      [1-10]               Number of voices used for polyphony (default=4)" << std::endl;
@@ -166,6 +178,8 @@ int main(int argc, char* argv[])
     piano[i].setBrightnessFactor(brightness);
     piano[i].setDetuningFactor(detuning);
     piano[i].setStiffnessFactor(stiffness);
+    piano[i].setOverallGain(gain);
+    piano[i].setPedalPresenceFactor(resonance);
   }
 
   if (midi) {

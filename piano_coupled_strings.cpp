@@ -70,7 +70,7 @@ void CoupledStrings::setDetuningFactor(StkFloat factor)
 {
   if (factor < 0) factor = 0;
   if (factor > 1) factor = 1;
-  detuningFactor = factor*10; // range 0 - 10
+  detuningFactor = factor * 9.0 + 1.0; // range 1 - 10
 
   setFrequency(frequency);
 }
@@ -80,7 +80,7 @@ void CoupledStrings::setStiffnessFactor(StkFloat factor)
   if (factor < 0) factor = 0;
   if (factor > 1) factor = 1;
 
-  stiffnessFactor = factor * 2.7 + 1; // range 1 - 3.7
+  stiffnessFactor = factor * 0.8 + 1; // range 1 - 1.8
 
   setFrequency(frequency);
 }

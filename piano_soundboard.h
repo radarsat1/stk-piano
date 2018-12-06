@@ -19,13 +19,15 @@ class Soundboard : public Generator
   void noteOn(int noteNumber, StkFloat velocity);
   void noteOff();
 
+  void setPedalPresenceFactor(StkFloat factor);
+
   virtual StkFrames& tick( StkFrames& frames, unsigned int channel = 0 );
   virtual StkFloat tick( unsigned int channel = 0 );
 
  protected:
   int sample_counter;
   int noteNumber;
-  float pedalPresenceFactor;
+  StkFloat pedalPresenceFactor;
 
   Noise noise;
   AsympT60 dryTapAmp;

@@ -25,6 +25,8 @@ class Piano : public Instrmnt
   void setEQBandwidthFactor(StkFloat factor);
   void setStiffnessFactor(StkFloat factor);
   void setDetuningFactor(StkFloat factor);
+  void setOverallGain(StkFloat factor);
+  void setPedalPresenceFactor(StkFloat factor);
   void setBrightnessFactor(StkFloat factor);
 
   int getNoteNumber() { return noteNumber; }
@@ -52,6 +54,7 @@ class Piano : public Instrmnt
   int noteNumber;
   StkFloat eqBandwidthFactor;
   StkFloat previousHammerPole;
+  StkFloat overallGain;
   StkFloat brightnessFactor;
 
   int sample_counter;
