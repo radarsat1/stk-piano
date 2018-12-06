@@ -181,16 +181,15 @@ void Piano::calcHammer(StkFloat velocity)
   // Hammer filter calculations
 
   StkFloat loudPoleValue = loudPole.getValue(noteNumber);
-  loudPoleValue += brightnessFactor * (-0.25);
+  loudPoleValue += -0.050239; // BrightnessAdjustment slider default
   StkFloat softPoleValue = softPole.getValue(noteNumber);
-  StkFloat normalizedVelocityValue = 1.0;//normalizedVelocity.getValue(velocity);
+  // NOT APPLIED. Unchecked in the inspector
+//  StkFloat normalizedVelocityValue = normalizedVelocity.getValue(velocity);
+  StkFloat normalizedVelocityValue = velocity;
   StkFloat loudGainValue = loudGain.getValue(noteNumber);
   StkFloat softGainValue = softGain.getValue(noteNumber);
 
-  // TODO: normalizedVelocity is incorrect.. velocity warping is indexed
-  //       differently -- have to check the SB patch
-
-  StkFloat overallGain = 1.0;
+  StkFloat overallGain = 2.807882; // Slider default
 
 
   StkFloat hammerPole = softPoleValue + (loudPoleValue - softPoleValue)*normalizedVelocityValue;

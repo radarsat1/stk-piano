@@ -18,7 +18,8 @@ using namespace stk;
 #define AUTHOR "Stephen Sinclair (with respect to the authors of SynthBuilder)"
 
 // Controls
-float velocity=1;
+// Clavier notes have a MIDI velocity of 64.
+float velocity=0.5039370079;
 float detuning=0.5;
 float stiffness=0.2;
 float brightness=0.5;
