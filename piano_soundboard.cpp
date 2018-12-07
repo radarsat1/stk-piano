@@ -12,6 +12,7 @@
 Soundboard::Soundboard()
 {
   sample_counter = 0;
+  pedalPresenceFactor = 0;
 }
 
 void Soundboard::setPedalPresenceFactor(StkFloat factor)

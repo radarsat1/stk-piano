@@ -14,7 +14,7 @@
 #define LOWEST_STABLE_NOTE 1  // was fixed by limiting stiffness poles
 #define PEDAL_ENVELOPE_T60 7.0
 #define HIGHEST_NOTEOFF_NOTE 86
-#define FIRST_HIGH_NOTE 88
+#define FIRST_HIGH_NOTE 100
 
 #define dbinv(x) pow(10,.05*x)
 
@@ -25,7 +25,8 @@ Piano::Piano()
   zero_count = 0;
   hipass.setB0(0.5);
   hipass.setB0(-0.5);
-  brightnessFactor = 0.5;
+  overallGain = 0;
+  brightnessFactor = 0;
 }
 
 void Piano::noteOn(StkFloat freq, StkFloat amp)
@@ -149,7 +150,9 @@ void Piano::controlChange (int number, StkFloat value)
 void Piano::setFrequency (StkFloat frequency)
 {
   noteNumber = CoupledStrings::FrequencyToNoteNumber(frequency);
-  cs.setFrequency(frequency);
+
+  if (noteNumber < FIRST_HIGH_NOTE)
+    cs.setFrequency(frequency);
 }
 
 void Piano::setEQBandwidthFactor(StkFloat factor)

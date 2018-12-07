@@ -6,6 +6,7 @@
 #define LOOP_GAIN_CUTOFF_T60 (.05)
 #define MAX_LOOP_GAIN (.9996)
 #define FIRST_DAMPERLESS_KEYNUM 89
+#define NO_MORE_STIFFNESS_CUTOFF_KEYNUM 92
 
 CoupledStrings::CoupledStrings()
   : Effect(),
@@ -13,7 +14,7 @@ CoupledStrings::CoupledStrings()
 {
   // initialize control parameters
   detuningFactor = 1;
-  stiffnessFactor = 0.3;
+  stiffnessFactor = 1;
   setFrequency(440);
 
   loopGain.setValue( MAX_LOOP_GAIN );
@@ -118,10 +119,12 @@ void CoupledStrings::setFrequency(StkFloat freq)
   calcCouplingFilter();
 
   // Stiffness Allpasses
-  StkFloat stiffness = stiffnessFactor * stiffnessCoefficient.getValue(noteNumber);
-
-  // Stability protection needed for lower notes (SS)
-  if (stiffness < -0.999) stiffness = -0.95;
+  StkFloat stiffness = stiffnessCoefficient.getValue(noteNumber);
+  if (noteNumber < NO_MORE_STIFFNESS_CUTOFF_KEYNUM){
+    if(stiffnessFactor>1.0) //assume between 0 and 2
+      stiffness -= (stiffness+1.0)*(stiffnessFactor-1.0);
+    else stiffness *= stiffnessFactor;
+  }
 
   for (int i=0; i<6; i++)
     stiffnessAP[i].setAllpass(stiffness);
