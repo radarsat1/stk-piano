@@ -10,9 +10,7 @@
 
 // Constants
 #define DCB2_TURNOFF_KEYNUM 92
-#define LAST_KEYNUM_WITH_DAMPER 88
 #define LOWEST_STABLE_NOTE 1  // was fixed by limiting stiffness poles
-#define PEDAL_ENVELOPE_T60 7.0
 #define HIGHEST_NOTEOFF_NOTE 86
 #define FIRST_HIGH_NOTE 100
 
@@ -207,20 +205,6 @@ void Piano::calcHammer(StkFloat velocity)
   StkFloat hammerPole = softPoleValue + (loudPoleValue - softPoleValue)*normalizedVelocityValue;
   StkFloat hammerGain = overallGain*(softGainValue + (loudGainValue - softGainValue)*normalizedVelocityValue);
 
-  if (noteNumber > LAST_KEYNUM_WITH_DAMPER) {
-    StkFloat timeSinceLastArticulation = sample_counter / Stk::sampleRate();
-    StkFloat poleVariation = hammerPole - previousHammerPole;
-    if (poleVariation > 0) {
-      if (timeSinceLastArticulation < PEDAL_ENVELOPE_T60/2) {
-        hammerPole = previousHammerPole;
-      }
-      else if (timeSinceLastArticulation < PEDAL_ENVELOPE_T60) {
-        StkFloat poleAdjustmentFactor = 2*(1 - timeSinceLastArticulation/PEDAL_ENVELOPE_T60);
-        hammerPole = previousHammerPole + poleVariation * poleAdjustmentFactor;
-      }
-    }
-  }
-
   StkFloat HammerFiltA1 = -hammerPole;
   StkFloat HammerFiltB0 = (1.0-hammerPole)*hammerGain;
 
@@ -229,8 +213,6 @@ void Piano::calcHammer(StkFloat velocity)
    StkFloat loudHammerFiltA1 = -loudPoleValue;
    StkFloat loudHammerFiltB0 = (1.0-loudPoleValue)*hammerGain;
    */
-
-  previousHammerPole = hammerPole;
 
   int i;
   for (i=0; i<4; i++) {
@@ -254,7 +236,7 @@ StkFloat Piano::computeSample()
   }
 
   // Track time since noteOn
-  // (for hammer and dummy noteOff calculations)
+  // (for dummy noteOff calculations)
   sample_counter ++;
 
   // Soundboard

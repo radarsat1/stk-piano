@@ -53,7 +53,6 @@ class Piano : public Instrmnt
 
   int noteNumber;
   StkFloat eqBandwidthFactor;
-  StkFloat previousHammerPole;
   StkFloat overallGain;
   StkFloat brightnessFactor;
 
