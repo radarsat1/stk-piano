@@ -157,23 +157,25 @@ StkFloat CoupledStrings::computeSample(StkFloat input)
 {
   int i;
   StkFloat y, y1, y2;
-  y1 = y2 = input * loopGain.tick();
+  StkFloat cutoff = loopGain.tick();
+  y1 = input + (prev_y1 * cutoff);
+  y2 = input + (prev_y2 * cutoff);
+
+  StkFloat stringOut = y1 + y2;
+  y = couplingPoleZero.tick(stringOut);
+
+  y1 += y;
+  y2 += y;
 
   for (i=0; i<3; i++) {
-    y1 = stiffnessAP[i].tick(y1 + prev_y1);
-    y2 = stiffnessAP[i].tick(y2 + prev_y2);
-    prev_y1 = 0;
-    prev_y2 = 0;
+    y1 = stiffnessAP[i].tick(y1);
+    y2 = stiffnessAP[i].tick(y2);
   }
 
-  y1 = delay1.tick(y1);
-  y2 = delay2.tick(y2);
+  prev_y1 = delay1.tick(y1);
+  prev_y2 = delay2.tick(y2);
 
-  y = couplingPoleZero.tick(y1 + y2);
-  prev_y1 = y1 + y;
-  prev_y2 = y2 + y;
-
-  return y1 + y2;
+  return stringOut;
 }
 
 StkFrames& CoupledStrings::tick( StkFrames& frames, unsigned int channel )

@@ -23,6 +23,7 @@ Piano::Piano()
   zero_count = 0;
   hipass.setB0(0.5);
   hipass.setB0(-0.5);
+  noteNumber = 0;
   overallGain = 0;
   brightnessFactor = 0;
 }
@@ -42,6 +43,9 @@ void Piano::noteOn(int noteNumber, StkFloat amp)
   setFrequency( freq );
 
   sb.noteOn(noteNumber, amp);
+
+  if (noteNumber < FIRST_HIGH_NOTE)
+    cs.noteOn(freq, amp);
 
   calcHammer(amp);
 
