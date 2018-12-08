@@ -22,7 +22,6 @@ class Piano : public Instrmnt
   virtual StkFloat computeSample();
 
   // These are all ratios between [0, 1]
-  void setEQBandwidthFactor(StkFloat factor);
   void setStiffnessFactor(StkFloat factor);
   void setDetuningFactor(StkFloat factor);
   void setOverallGain(StkFloat factor);
@@ -52,7 +51,6 @@ class Piano : public Instrmnt
   BiQuad high_bq[4];
 
   int noteNumber;
-  StkFloat eqBandwidthFactor;
   StkFloat overallGain;
   StkFloat brightnessFactor;
 

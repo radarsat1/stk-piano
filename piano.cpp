@@ -153,13 +153,6 @@ void Piano::setFrequency (StkFloat frequency)
     cs.setFrequency(frequency);
 }
 
-void Piano::setEQBandwidthFactor(StkFloat factor)
-{
-  if (factor < 0) factor = 0;
-  if (factor > 1) factor = 1;
-  eqBandwidthFactor = factor;
-}
-
 void Piano::setStiffnessFactor(StkFloat factor)
 {
   cs.setStiffnessFactor(factor);
