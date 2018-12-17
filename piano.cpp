@@ -11,7 +11,7 @@
 // Constants
 #define DCB2_TURNOFF_KEYNUM 92
 #define LOWEST_STABLE_NOTE 1  // was fixed by limiting stiffness poles
-#define HIGHEST_NOTEOFF_NOTE 86
+#define LAST_KEYNUM_WITH_DAMPER 88
 #define FIRST_HIGH_NOTE 100
 
 #define dbinv(x) pow(10,.05*x)
@@ -78,13 +78,17 @@ void Piano::noteOn(int noteNumber, StkFloat amp)
   if (noteNumber >= FIRST_HIGH_NOTE) {
     calcHighTuning(noteNumber, freq);
   }
+  else
+  {
+    // Strike position comb filter EQ
+    StkFloat eq_tuning = freq / strikePosition.getValue(noteNumber);
+    StkFloat eq_bandwidth = EQBandwidthFactor.getValue(noteNumber) * freq;
 
-  // Strike position comb filter EQ
-  StkFloat eq_tuning = freq / strikePosition.getValue(noteNumber);
-  StkFloat eq_bandwidth = EQBandwidthFactor.getValue(noteNumber) * freq;
+    eq.setResonance(eq_tuning, eq_bandwidth / Stk::sampleRate(), true);
+    eq.setGain( EQGain.getValue(noteNumber) );
 
-  eq.setResonance(eq_tuning, eq_bandwidth / Stk::sampleRate(), true);
-  eq.setGain( EQGain.getValue(noteNumber) );
+  }
+
 }
 
 void Piano::calcHighTuning(int noteNumber, StkFloat freq)
@@ -224,7 +228,7 @@ StkFloat Piano::computeSample()
   int i;
 
   // Send dummy noteOffs above E6
-  if ( noteNumber > 86
+  if ( noteNumber > LAST_KEYNUM_WITH_DAMPER
       && (sample_counter / (StkFloat)Stk::sampleRate()
           > noteOffDelayTime.getValue(noteNumber)) )
   {
