@@ -8,6 +8,7 @@
 #define DRY_TAP_CUTOFF_TIME (.3)
 #define DRY_PEDAL_RESONANCE_FACTOR (.5)
 #define FIRST_DAMPERLESS_KEYNUM 89
+#define MINUS_THREE_DB (0.70794578438413791);
 
 Soundboard::Soundboard()
 {
@@ -29,7 +30,7 @@ StkFloat Soundboard::computeSample()
   StkFloat nz = 0;
 
   if (dt > 0 || pe > 0)
-    nz = noise.tick();
+    nz = noise.tick()*MINUS_THREE_DB;
 
   sample_counter ++;
 
