@@ -169,7 +169,7 @@ StkFloat CoupledStrings::computeSample(StkFloat input)
 
   for (i=0; i<3; i++) {
     y1 = stiffnessAP[i].tick(y1);
-    y2 = stiffnessAP[i].tick(y2);
+    y2 = stiffnessAP[i+3].tick(y2);
   }
 
   prev_y1 = delay1.tick(y1);
