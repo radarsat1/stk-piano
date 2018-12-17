@@ -4,10 +4,10 @@
 
 #include <Noise.h>
 #include <Generator.h>
+#include <Asymp.h>
 
 using namespace stk;
 
-#include "AsympT60.h"
 
 class Soundboard : public Generator
 {
@@ -30,8 +30,8 @@ class Soundboard : public Generator
   StkFloat pedalPresenceFactor;
 
   Noise noise;
-  AsympT60 dryTapAmp;
-  AsympT60 pedalEnv;
+  Asymp dryTapAmp;
+  Asymp pedalEnv;
 };
 
 #endif // _PIANO_SOUNDBOARD_H_

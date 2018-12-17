@@ -8,10 +8,9 @@
 #include "PoleZero.h"
 #include "TwoZero.h"
 #include "Effect.h"
+#include "Asymp.h"
 
 using namespace stk;
-
-#include "AsympT60.h"
 
 class CoupledStrings : public Effect
 {
@@ -50,7 +49,7 @@ class CoupledStrings : public Effect
 
   PoleZero couplingPoleZero;
 
-  AsympT60 loopGain;
+  Asymp loopGain;
 
   StkFloat prev_y1, prev_y2;
 
