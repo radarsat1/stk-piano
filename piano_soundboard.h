@@ -4,31 +4,34 @@
 
 #include <Noise.h>
 #include <Generator.h>
+#include <Asymp.h>
 
 using namespace stk;
 
-#include "AsympT60.h"
 
 class Soundboard : public Generator
 {
-  public:
-	Soundboard();
-	~Soundboard() {}
+ public:
+  Soundboard();
+  ~Soundboard() {}
 
-	virtual StkFloat computeSample();
-	void noteOn(int noteNumber, StkFloat velocity);
-	void noteOff();
+  virtual StkFloat computeSample();
+  void noteOn(int noteNumber, StkFloat velocity);
+  void noteOff();
 
-    virtual StkFrames& tick( StkFrames& frames, unsigned int channel = 0 );
-    virtual StkFloat tick( unsigned int channel = 0 );
+  void setPedalPresenceFactor(StkFloat factor);
 
-  protected:
-	int sample_counter;
-	int noteNumber;
+  virtual StkFrames& tick( StkFrames& frames, unsigned int channel = 0 );
+  virtual StkFloat tick( unsigned int channel = 0 );
 
-	Noise noise;
-	AsympT60 dryTapAmp;
-	AsympT60 pedalEnv;
+ protected:
+  int sample_counter;
+  int noteNumber;
+  StkFloat pedalPresenceFactor;
+
+  Noise noise;
+  Asymp dryTapAmp;
+  Asymp pedalEnv;
 };
 
 #endif // _PIANO_SOUNDBOARD_H_

@@ -17,7 +17,7 @@ ifeq ($(shell uname -s), Darwin)
 LIB += -framework CoreAudio -framework CoreMIDI -framework CoreFoundation
 endif
 
-SRC = pianotest.cpp piano.cpp piano_coupled_strings.cpp piano_coefficients.cpp lookup_table.cpp piano_soundboard.cpp AsympT60.cpp
+SRC = pianotest.cpp piano.cpp piano_coupled_strings.cpp piano_coefficients.cpp lookup_table.cpp piano_soundboard.cpp
 OBJ = $(SRC:%.cpp=%.o)
 
 all: pianotest
